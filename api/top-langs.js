@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
   res.setHeader("Content-Type", "image/svg+xml");
 
   try {
-    topLangs = await fetchTopLanguages(username, extra);
+    topLangs = await fetchTopLanguages(username, decodeURIComponent(extra));
   } catch (err) {
     return res.send(renderError(err.message));
   }

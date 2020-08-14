@@ -24,9 +24,9 @@ const fetcher = (variables, token) => {
             }
           }
           ${(variables.extra && (variables.extra.length !== 0) && variables.extra.every(val => val[1] && (val[1].length !== 0))) ? variables.extra.map(([org, repos]) => `
-          ${org.split('-').join('')}: organization(login: "${org}") {
+          ${org.replace(/(\.|-|%|,)/gi)}: organization(login: "${org}") {
             ${repos.map(repo => `
-            ${repo.split('-').join('')}: repository(name: "${repo}") {
+            ${repo.replace(/(\.|-|%|,)/gi)}: repository(name: "${repo}") {
               languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
                 edges {
                   size
@@ -56,7 +56,10 @@ async function fetchTopLanguages(username, extra = "") {
   if (!extra) extra = [];
   else {
     try {
-      extra = extra.split(';').map(val => val.split('/')).map(val => [val[0], val[1].split(',')]);
+      extra = extra
+        .split(';')
+        .map(val => val.split('/'))
+        .map(val => [val[0], val[1].split(',')]);
     } catch {
       extra = [];
     }
